@@ -2,13 +2,11 @@ import React from "react";
 import Homepage from "./pages/Homepage.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AddFavorite from "./pages/AddFavorite.js";
-import DataProvider from "./DataProvider";
 import View from "./pages/View.js";
 import Edit from "./pages/Edit.js";
 
 const App = () => {
   return (
-    <DataProvider>
       <Router>
         <Routes>
           <Route exact path="/add" element={<AddFavorite />} />
@@ -17,7 +15,6 @@ const App = () => {
           <Route exact path="/" element={<Homepage />} />
         </Routes>
       </Router>
-    </DataProvider>
   );
 };
 
