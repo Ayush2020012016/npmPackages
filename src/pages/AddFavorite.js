@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Route, useNavigate } from "react-router";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import Textinput from "../Components/Textinput";
 import Textarea from "../Components/Textarea";
 import Button from "../Components/Button";
@@ -23,7 +22,7 @@ const AddFavorite = () => {
         const response = await fetch(
           `https://registry.npmjs.org/-/v1/search?text=${searchQuery}&size=10`
         ); //fetch API data based on searchQuery state
-        const packages = await response.json(); 
+        const packages = await response.json();
         setPackList(packages.objects); //update packList state with packages.objects from API response
         setIsLoading(false); //set isLoading state to false
       };
@@ -31,16 +30,16 @@ const AddFavorite = () => {
         setTimeout(getData, 500);
       }
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
-  }, [searchQuery]); 
+  }, [searchQuery]);
 
   useEffect(() => {
     localStorage.setItem("packagesList", JSON.stringify(packagesList)); //store packagesList state in localStorage as a stringified JSON object
-    if (selectedPackage.length != 0) {
-      navigate("/"); 
+    if (selectedPackage.length !== 0) {
+      navigate("/");
     }
-  }, [packagesList]); 
+  }, [packagesList]);
 
   const handleChange = (e) => {
     setSearchinput(e.target.value); //update searchinput state with input value as user types
@@ -128,7 +127,3 @@ const AddFavorite = () => {
 };
 
 export default AddFavorite;
-
-
-
-
