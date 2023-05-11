@@ -13,7 +13,7 @@ const Homepage = () => {
 
   // useEffect to log the packagesList whenever it updates
   useEffect(() => {
-    console.log(packagesList);
+    localStorage.setItem("packagesList", JSON.stringify(packagesList)); //store packagesList state in localStorage as a stringified JSON object
   }, [packagesList]);
 
   // function to navigate to the Add Package page
@@ -35,25 +35,33 @@ const Homepage = () => {
 
   // function to delete a package from the packagesList
   const handleDeleteClick = (value) => {
-    console.log("delete the value");
-    // filter out the package with the same name as the clicked package
-    const updatedPackagesList = packagesList.filter(
-      (pkg) => pkg.name !== value.name
-    );
-    // set the packagesList state to the updated list
-    setPackagesList(updatedPackagesList);
+    if (window.confirm(`Are you sure you want to delete ${value.name}?`)) {
+      // filter out the package with the same name as the clicked package
+      const updatedPackagesList = packagesList.filter(
+        (pkg) => pkg.name !== value.name
+      );
+      // set the packagesList state to the updated list
+      setPackagesList(updatedPackagesList);
+    }
   };
   console.log("localStorage");
   return (
     <div className=" h-[100vh] md:p-[100px] p-[20px]">
-      <div className="heading text-[2em] font-bold">
-        Welcome to the Favorite NPM Packages.
-      </div>
-      <div className="text-center">
-        <Button onClick={handleClick} label="Add Packages" />
+      <div className="flex justify-between">
+        <div className="heading text-[2em] font-bold">
+          Welcome to the Favorite NPM Packages.
+        </div>
+        {packagesList.length > 0 ? (
+          <>
+            {" "}
+            <div className="text-center">
+              <Button onClick={handleClick} label="Add Packages" />
+            </div>
+          </>
+        ) : null}
       </div>
 
-      {packagesList ? (
+      {packagesList.length > 0 ? (
         <>
           <div className="mainsection md:mt-[150px] p-9 mt-[50px] h-[40vh] border border-slate-400">
             <div className="flex text-[20px]  font-semibold">
