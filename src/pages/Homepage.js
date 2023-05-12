@@ -8,7 +8,7 @@ const Homepage = () => {
 
   // retrieve the packages list from local storage and initialize it to state
   const [packagesList, setPackagesList] = useState(
-    JSON.parse(localStorage.getItem("packagesList"))
+    JSON.parse(localStorage.getItem("packagesList") || "[]")
   );
 
   // useEffect to log the packagesList whenever it updates

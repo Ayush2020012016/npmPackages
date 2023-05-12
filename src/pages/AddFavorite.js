@@ -7,7 +7,7 @@ import Button from "../Components/Button";
 const AddFavorite = () => {
   const navigate = useNavigate(); //useNavigate hook from react-router-dom to programmatically navigate to other pages
   const [packagesList, setPackagesList] = useState(
-    JSON.parse(localStorage.getItem("packagesList")) //get packagesList from localStorage or null if it doesn't exist and parse it as JSON
+    JSON.parse(localStorage.getItem("packagesList") || "[]") //get packagesList from localStorage or null if it doesn't exist and parse it as JSON
   );
   const [packList, setPackList] = useState([]); //initialize packList state as an empty array
   const [searchQuery, setSearchQuery] = useState("node"); //initialize searchQuery state with "node" as default
