@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Textinput from "../Components/Textinput";
 import Textarea from "../Components/Textarea";
@@ -10,29 +10,23 @@ const AddFavorite = () => {
     JSON.parse(localStorage.getItem("packagesList") || "[]") //get packagesList from localStorage or null if it doesn't exist and parse it as JSON
   );
   const [packList, setPackList] = useState([]); //initialize packList state as an empty array
-  const [searchQuery, setSearchQuery] = useState("node"); //initialize searchQuery state with "node" as default
+  // const [searchQuery, setSearchQuery] = useState("node"); //initialize searchQuery state with "node" as default
   const [searchinput, setSearchinput] = useState("node"); //initialize searchinput state with "node" as default
   const [textinput, setTextinput] = useState(""); //initialize textinput state as an empty string
   const [isLoading, setIsLoading] = useState(true); //initialize isLoading state as true
   const [selectedPackage, setSelectedPackage] = useState([]); //initialize selectedPackage state as an empty array
 
-  useEffect(() => {
-    try {
-      const getData = async () => {
-        const response = await fetch(
-          `https://registry.npmjs.org/-/v1/search?text=${searchQuery}&size=10`
-        ); //fetch API data based on searchQuery state
-        const packages = await response.json();
-        setPackList(packages.objects); //update packList state with packages.objects from API response
-        setIsLoading(false); //set isLoading state to false
-      };
-      if (searchQuery) {
-        setTimeout(getData, 500);
-      }
-    } catch (error) {
-      console.log(error);
+  const getData = async (value) => {
+    console.log("getdata function is running " + value);
+    if (value) {
+      const response = await fetch(
+        `https://registry.npmjs.org/-/v1/search?text=${value}`
+      ); //fetch API data based on searchQuery state
+      const packages = await response.json();
+      setPackList(packages.objects); //update packList state with packages.objects from API response
+      setIsLoading(false); //set isLoading state to false
     }
-  }, [searchQuery]);
+  };
 
   useEffect(() => {
     localStorage.setItem("packagesList", JSON.stringify(packagesList)); //store packagesList state in localStorage as a stringified JSON object
@@ -40,16 +34,30 @@ const AddFavorite = () => {
       navigate("/");
     }
   }, [packagesList]);
+  useEffect(() => {
+    console.log(searchinput);
+    optimizedFn();
+  }, [searchinput]);
 
-  const handleChange = (e) => {
-    setSearchinput(e.target.value); //update searchinput state with input value as user types
+  const debounce = (func) => {
+    let timer;
+    return function (...args) {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = null;
+        console.log(this, args);
+        func.apply(this, args);
+      }, 500);
+    };
   };
-  const handleClick = (e) => {
-    if (e.key === "Enter") {
-      setIsLoading(true); //set isLoading state to true while API data is being fetched
-      setSearchQuery(searchinput); //update searchQuery state with user input when they hit the Enter key
-    }
-  };
+  const optimizedFn = useCallback(debounce(getData), []);
+
+  // const handleClick = (e) => {
+  //   if (e.key === "Enter") {
+  //     setIsLoading(true); //set isLoading state to true while API data is being fetched
+  //     setSearchQuery(searchinput); //update searchQuery state with user input when they hit the Enter key
+  //   }
+  // };
   const handleRadioChange = (e) => {
     setSelectedPackage(e.target.value); //update selectedPackage state with the value of the radio button that was clicked
   };
@@ -73,18 +81,17 @@ const AddFavorite = () => {
       <div className="heading text-[2em] font-bold">Search NPM Packages.</div>
       <div>
         <Textinput
-          value={searchinput}
-          onChange={handleChange}
+          onChange={(e) => optimizedFn(e.target.value)}
           placeholder={"angular"}
-          onKeyDown={handleClick}
+          // onKeyDown={handleClick}
         />
       </div>
 
       {isLoading ? (
-        <>loading...</>
+        <div className="h-[400px]">loading...</div>
       ) : (
         <>
-          <div className="mt-4">
+          <div className="mt-4 overflow-scroll h-[400px]">
             {packList.map((value, index) => {
               return (
                 <div key={`${value.package.name}${index}`}>

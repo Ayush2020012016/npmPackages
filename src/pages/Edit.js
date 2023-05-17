@@ -14,15 +14,18 @@ const Edit = () => {
   };
   const handleSubmit = () => {
     // Get the packagesList from localStorage
+
     const packagesList = JSON.parse(localStorage.getItem("packagesList"));
 
     // Find the index of the package to update
     const packageIndex = packagesList.findIndex(
       (pkg) => pkg.name === state.name
     );
-    console.log(description);
+    console.log(description.length);
     // Update the description of the package with the new value entered by the user
-    packagesList[packageIndex].description = description;
+    if (description.length != 0) {
+      packagesList[packageIndex].description = description;
+    }
 
     // Update the packagesList in localStorage
     localStorage.setItem("packagesList", JSON.stringify(packagesList));
